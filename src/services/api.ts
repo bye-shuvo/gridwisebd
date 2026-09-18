@@ -7,7 +7,7 @@ export interface ApiError {
   detail?: unknown;
 }
 
-const RAW_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const RAW_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 // Strip trailing slash if present
 export const API_BASE_URL = RAW_BASE_URL.replace(/\/+$/, '');
 
