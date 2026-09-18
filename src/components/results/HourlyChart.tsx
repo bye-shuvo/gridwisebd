@@ -28,13 +28,13 @@ export const HourlyChart: React.FC<HourlyChartProps> = ({ data }) => {
   const chartData = data.map((item) => ({
     hour: `${item.hour.toString().padStart(2, '0')}:00`,
     hourRaw: item.hour,
-    demand: item.demand_kwh,
-    solar: item.solar_kwh,
-    grid: item.grid_kwh,
-    batterySoC: item.battery_energy_after_kwh,
-    batteryAction: item.battery_action,
-    batteryPower: item.battery_kwh,
-    tariff: item.tariff_bdt_per_kwh,
+    demand: item.demand_kwh ?? 0,
+    solar: item.solar_kwh ?? item.solar_used_kwh ?? 0,
+    grid: item.grid_kwh ?? 0,
+    batterySoC: item.battery_energy_after_kwh ?? 0,
+    batteryAction: item.battery_action ?? 'idle',
+    batteryPower: item.battery_kwh ?? 0,
+    tariff: item.tariff_bdt_per_kwh ?? 0,
   }));
 
   return (

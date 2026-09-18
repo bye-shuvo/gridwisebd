@@ -74,7 +74,13 @@ export const HourlyTable: React.FC<HourlyTableProps> = ({ hourlyPlan }) => {
               const action = (row.battery_action || 'idle').toLowerCase();
               const isCharge = action === 'charge';
               const isDischarge = action === 'discharge';
-              const cost = row.cost_bdt ?? Number((row.grid_kwh * row.tariff_bdt_per_kwh).toFixed(2));
+              const demand = row.demand_kwh ?? 0;
+              const solar = row.solar_kwh ?? row.solar_used_kwh ?? 0;
+              const grid = row.grid_kwh ?? 0;
+              const batteryKw = row.battery_kwh ?? 0;
+              const batterySoC = row.battery_energy_after_kwh ?? 0;
+              const tariff = row.tariff_bdt_per_kwh ?? 0;
+              const cost = row.cost_bdt ?? Number((grid * tariff).toFixed(2));
 
               return (
                 <tr
@@ -85,13 +91,13 @@ export const HourlyTable: React.FC<HourlyTableProps> = ({ hourlyPlan }) => {
                     {row.hour.toString().padStart(2, '0')}:00
                   </td>
                   <td className="py-2.5 px-4 text-rose-300">
-                    {row.demand_kwh.toFixed(1)} kWh
+                    {demand.toFixed(1)} kWh
                   </td>
                   <td className="py-2.5 px-4 text-amber-300">
-                    {row.solar_kwh.toFixed(1)} kWh
+                    {solar.toFixed(1)} kWh
                   </td>
                   <td className="py-2.5 px-4 text-cyan-300 font-semibold">
-                    {row.grid_kwh.toFixed(1)} kWh
+                    {grid.toFixed(1)} kWh
                   </td>
 
                   {/* Battery Action Icon & Badge */}
@@ -117,15 +123,15 @@ export const HourlyTable: React.FC<HourlyTableProps> = ({ hourlyPlan }) => {
                   </td>
 
                   <td className="py-2.5 px-4 text-slate-300">
-                    {row.battery_kwh > 0 ? `${row.battery_kwh.toFixed(1)} kW` : '—'}
+                    {batteryKw > 0 ? `${batteryKw.toFixed(1)} kW` : '—'}
                   </td>
 
                   <td className="py-2.5 px-4 text-emerald-300 font-semibold">
-                    {row.battery_energy_after_kwh.toFixed(1)} kWh
+                    {batterySoC.toFixed(1)} kWh
                   </td>
 
                   <td className="py-2.5 px-4 text-slate-400">
-                    ৳{row.tariff_bdt_per_kwh.toFixed(2)}
+                    ৳{tariff.toFixed(2)}
                   </td>
 
                   <td className="py-2.5 px-4 text-right font-semibold text-amber-300">

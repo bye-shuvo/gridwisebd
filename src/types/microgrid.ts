@@ -24,13 +24,14 @@ export type BatteryActionType = 'charge' | 'discharge' | 'idle';
 
 export interface HourlyPlanItem {
   hour: number;
-  demand_kwh: number;
-  solar_kwh: number;
-  tariff_bdt_per_kwh: number;
   grid_kwh: number;
   battery_action: BatteryActionType | string;
   battery_kwh: number;
   battery_energy_after_kwh: number;
+  solar_used_kwh?: number;
+  demand_kwh?: number;
+  solar_kwh?: number;
+  tariff_bdt_per_kwh?: number;
   cost_bdt?: number;
 }
 

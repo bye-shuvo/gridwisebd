@@ -22,7 +22,7 @@ export const CountUpNumber: React.FC<CountUpNumberProps> = ({
   useEffect(() => {
     let startTimestamp: number | null = null;
     const startValue = 0;
-    const targetValue = value;
+    const targetValue = typeof value === 'number' && !isNaN(value) ? value : 0;
 
     // Ease-out cubic curve
     const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);

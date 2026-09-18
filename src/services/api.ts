@@ -153,8 +153,34 @@ export async function postOptimizeEnergy(payload: MicrogridPayload): Promise<Opt
 
     // 200 OK -> parse JSON
     try {
-      const data = await response.json();
-      return data as OptimizationResponse;
+      const data = (await response.json()) as OptimizationResponse;
+
+      // Backend returns [hour, grid_kwh, solar_used_kwh, battery_action, battery_kwh, battery_energy_after_kwh]
+      // Enrich with original payload demand_kwh, solar_kwh, and tariff_bdt_per_kwh for rich UI display
+      if (Array.isArray(data.hourly_plan)) {
+        data.hourly_plan = data.hourly_plan.map((item) => {
+          const inputHour = payload.hours?.find((h) => h.hour === item.hour);
+          const demand = item.demand_kwh ?? inputHour?.demand_kwh ?? 0;
+          const solar = item.solar_kwh ?? inputHour?.solar_kwh ?? item.solar_used_kwh ?? 0;
+          const tariff = item.tariff_bdt_per_kwh ?? inputHour?.tariff_bdt_per_kwh ?? 0;
+          const grid = item.grid_kwh ?? 0;
+          const cost = item.cost_bdt ?? Number((grid * tariff).toFixed(2));
+
+          return {
+            ...item,
+            demand_kwh: demand,
+            solar_kwh: solar,
+            solar_used_kwh: item.solar_used_kwh ?? solar,
+            tariff_bdt_per_kwh: tariff,
+            grid_kwh: grid,
+            cost_bdt: cost,
+            battery_kwh: item.battery_kwh ?? 0,
+            battery_energy_after_kwh: item.battery_energy_after_kwh ?? 0,
+          };
+        });
+      }
+
+      return data;
     } catch (parseError) {
       const err: ApiError = {
         type: 'MALFORMED_JSON',
