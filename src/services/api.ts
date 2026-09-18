@@ -7,7 +7,10 @@ export interface ApiError {
   detail?: unknown;
 }
 
-const RAW_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const envUrl = import.meta.env.VITE_API_BASE_URL;
+// Direct browser calls to onrender.com fail CORS and get blocked by client ad blockers.
+// Always route through /api so Vite (locally) and Vercel rewrites (in production) proxy requests server-to-server.
+const RAW_BASE_URL = (!envUrl || envUrl.includes('onrender.com')) ? '/api' : envUrl;
 // Strip trailing slash if present
 export const API_BASE_URL = RAW_BASE_URL.replace(/\/+$/, '');
 
